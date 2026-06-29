@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Турбозайм — Профиль</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+  }
+
+  /* Top browser bar simulation */
+  .browser-bar {
+    background: #f2f2f7;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  .browser-bar .url-bar {
+    flex: 1;
+    background: #e5e5ea;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #333;
+    text-align: center;
+  }
+
+  /* Nav */
+  .navbar {
+    background: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 0 #eee;
+  }
+  .navbar .menu-btn {
+    width: 36px; height: 36px;
+    background: #f2f2f7;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer;
+  }
+  .navbar .brand {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 22px; font-weight: 700; color: #1a1a2e;
+  }
+  .navbar .brand .toggle {
+    width: 44px; height: 26px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border-radius: 13px;
+    position: relative;
+  }
+  .navbar .brand .toggle::after {
+    content: '';
+    position: absolute;
+    right: 3px; top: 3px;
+    width: 20px; height: 20px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .navbar .profile-btn {
+    width: 36px; height: 36px;
+    background: #f2f2f7;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer;
+  }
+
+  /* Main card */
+  .card-wrapper {
+    padding: 20px 16px;
+  }
+
+  .loan-card {
+    background: linear-gradient(145deg, #4facfe 0%, #00c6ff 40%, #0072ff 100%);
+    border-radius: 24px;
+    padding: 28px 24px 24px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0, 114, 255, 0.35);
+  }
+
+  /* Decorative blobs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    pointer-events: none;
+  }
+  .blob-1 { width: 100px; height: 100px; top: -20px; right: 40px; }
+  .blob-2 { width: 160px; height: 160px; bottom: -40px; right: -30px; }
+  .blob-3 { width: 70px; height: 70px; top: 60px; right: 10px; }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .loan-number {
+    font-size: 14px;
+    opacity: 0.85;
+    line-height: 1.5;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #00e676;
+    box-shadow: 0 0 6px #00e676;
+    flex-shrink: 0;
+  }
+
+  .total-amount {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+  .detail-item label {
+    font-size: 13px;
+    opacity: 0.75;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .detail-item span {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .detail-item span.zero {
+    opacity: 0.55;
+  }
+
+  .info-box {
+    background: rgba(255,255,255,0.18);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    backdrop-filter: blur(6px);
+    position: relative; z-index: 1;
+  }
+  .info-box strong { display: block; margin-bottom: 2px; font-size: 14px; }
+
+  .pay-btn {
+    width: 100%;
+    background: #0a0f2e;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative; z-index: 1;
+    letter-spacing: 0.3px;
+    opacity: 0.5;
+  }
+
+  /* Chat bubble */
+  .chat-fab {
+    position: fixed;
+    bottom: 28px; right: 20px;
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #4facfe, #0072ff);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 16px rgba(0,114,255,0.4);
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="browser-bar">
+  <div class="url-bar">profile.turbozaim.ru</div>
+</div>
+
+<div class="navbar">
+  <div class="menu-btn">☰</div>
+  <div class="brand">
+    <div class="toggle"></div>
+    Турбозайм
+  </div>
+  <div class="profile-btn">👤</div>
+</div>
+
+<div class="card-wrapper">
+  <div class="loan-card">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="card-top">
+      <div class="loan-number">Заём № АА<br>23856929</div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        Погашен
+      </div>
+    </div>
+
+    <div class="total-amount">0,00 ₽</div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <label>Основной долг</label>
+        <span class="zero">0 ₽</span>
+      </div>
+      <div class="detail-item">
+        <label>Проценты</label>
+        <span class="zero">0 ₽</span>
+      </div>
+      <div class="detail-item">
+        <label>Пени</label>
+        <span class="zero">0,00 ₽</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Задолженность погашена.</strong>
+      Дата погашения: 25 июня 2026
+    </div>
+
+    <button class="pay-btn" disabled>Задолженность отсутствует</button>
+  </div>
+</div>
+
+<div class="chat-fab">💬</div>
+
+</body>
+</html>
+
